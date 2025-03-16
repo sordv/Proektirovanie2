@@ -1,0 +1,75 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\user\\source\\repos\\pis2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\databasehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\databasehelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DatabaseHelper.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\DatabaseHelper.cs",
+              "RelativeDocumentMoniker": "pis2\\DatabaseHelper.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\DatabaseHelper.cs",
+              "RelativeToolTip": "pis2\\DatabaseHelper.cs",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAQwF0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-16T18:56:29.454Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainForm.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\MainForm.cs",
+              "RelativeDocumentMoniker": "pis2\\MainForm.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\MainForm.cs",
+              "RelativeToolTip": "pis2\\MainForm.cs",
+              "ViewState": "AgIAAIwBAAAAAAAAAAAAAI8BAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-16T18:56:13.487Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Program.cs",
+              "RelativeDocumentMoniker": "pis2\\Program.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Program.cs",
+              "RelativeToolTip": "pis2\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-16T13:29:58.62Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
