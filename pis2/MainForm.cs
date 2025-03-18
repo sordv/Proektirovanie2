@@ -11,62 +11,69 @@ namespace pis2
     {
         private bool isLoggedIn = false;
         private string connectionString = "Host=localhost;Username=postgres;Password=admin;Database=pis";
+        private DatabaseHelper dbHelper;
 
+        private Panel panelTabsLogin;
         private Button buttonTabLogin;
         private Button buttonTabRegister;
+
         private Panel panelLogin;
-        private Panel panelRegister;
         private TextBox textboxLoginLogin;
         private TextBox textboxLoginPassword;
+        private Button buttonLogin;
+        private Label labelLoginError;
+        private Panel panelRegister;
         private TextBox textboxRegisterLogin;
         private TextBox textboxRegisterPassword;
         private TextBox textboxRegisterPasswordConfirm;
-        private Button buttonLogin;
         private Button buttonRegister;
-        private Label labelLoginError;
         private Label labelRegisterError;
 
-        private Panel panelLoggedIn;
-        private Button buttonLogout;
+        private Panel panelTabsLoggedIn;
+        private Button buttonTabUser;
+        private Button buttonTabRoadmap;
+
+        private Panel panelUser;
         private Label labelInfo;
         private ComboBox comboBoxCitizenship;
         private List<CheckBox> checkBoxesConditions;
         private Button buttonSave;
-        private DatabaseHelper dbHelper;
+        private Button buttonLogout;
+        private Panel panelRoadmap;
 
         public MainForm()
         {
             dbHelper = new DatabaseHelper(connectionString);
-            InitializeForm();
+            InitializeLoginForm();
             ShowLoginPanel();
         }
 
-        private void InitializeForm()
+        private void InitializeLoginForm()
         {
             this.Text = "Проектирование информационных систем";
-            this.Size = new Size(800, 500);
-            this.MinimumSize = new Size(500, 300);
+            this.Size = new Size(800, 600);
+            this.MinimumSize = new Size(500, 400);
             this.Resize += MainForm_Resize;
 
-            // PANEL MENU
-            Panel panelTabs = new Panel();
-            panelTabs.Dock = DockStyle.Top;
-            panelTabs.Height = 40;
-            this.Controls.Add(panelTabs);
+            // PANEL TABS LOGIN WITH BUTTONS
+            panelTabsLogin = new Panel();
+            panelTabsLogin.Dock = DockStyle.Top;
+            panelTabsLogin.Height = 40;
+            this.Controls.Add(panelTabsLogin);
 
             buttonTabLogin = new Button();
             buttonTabLogin.Text = "Вход";
             buttonTabLogin.Dock = DockStyle.Left;
             buttonTabLogin.Width = this.ClientSize.Width / 2;
             buttonTabLogin.Click += buttonTabLogin_Click;
-            panelTabs.Controls.Add(buttonTabLogin);
+            panelTabsLogin.Controls.Add(buttonTabLogin);
 
             buttonTabRegister = new Button();
             buttonTabRegister.Text = "Регистрация";
             buttonTabRegister.Dock = DockStyle.Right;
             buttonTabRegister.Width = this.ClientSize.Width / 2;
             buttonTabRegister.Click += buttonTabRegister_Click;
-            panelTabs.Controls.Add(buttonTabRegister);
+            panelTabsLogin.Controls.Add(buttonTabRegister);
 
             // LOGIN & REGISTER PANELS
             panelLogin = new Panel();
@@ -145,39 +152,61 @@ namespace pis2
             CenterPanelContent(panelLogin);
             CenterPanelContent(panelRegister);
 
-            // LOGGED IN PANEL
-            panelLoggedIn = new Panel();
-            panelLoggedIn.Dock = DockStyle.Fill;
-            this.Controls.Add(panelLoggedIn);
-
-            InitializeLoggedInPanel();
+            InitializeLoggedInForm();
         }
 
-        private void InitializeLoggedInPanel()
+        private void InitializeLoggedInForm()
         {
-            //panelLoggedIn.Controls.Clear();
+            // PANEL TABS LOGGED IN WITH BUTTONS
+            panelTabsLoggedIn = new Panel();
+            panelTabsLoggedIn.Dock = DockStyle.Top;
+            panelTabsLoggedIn.Height = 40;
+            this.Controls.Add(panelTabsLoggedIn);
 
-            // FIX
+            buttonTabUser = new Button();
+            buttonTabUser.Text = "Данные";
+            buttonTabUser.Dock = DockStyle.Left;
+            buttonTabUser.Width = this.ClientSize.Width / 2;
+            buttonTabUser.Click += buttonTabUser_Click;
+            panelTabsLoggedIn.Controls.Add(buttonTabUser);
+
+            buttonTabRoadmap = new Button();
+            buttonTabRoadmap.Text = "Дорожная карта";
+            buttonTabRoadmap.Dock = DockStyle.Right;
+            buttonTabRoadmap.Width = this.ClientSize.Width / 2;
+            buttonTabRoadmap.Click += buttonTabRoadmap_Click;
+            panelTabsLoggedIn.Controls.Add(buttonTabRoadmap);
+
+            // USER & ROADMAP PANELS
+            panelUser = new Panel();
+            panelUser.Dock = DockStyle.Fill;
+            this.Controls.Add(panelUser);
+
+            panelRoadmap = new Panel();
+            panelRoadmap.Dock = DockStyle.Fill;
+            this.Controls.Add(panelRoadmap);
+
+            // USER PANEL CONTANT
             labelInfo = new Label();
             labelInfo.Text = "Укажите информацию о себе";
-            labelInfo.Location = new Point(20, 20);
+            labelInfo.Location = new Point(20, 50);
             labelInfo.AutoSize = true;
-            panelLoggedIn.Controls.Add(labelInfo);
+            panelUser.Controls.Add(labelInfo);
 
             comboBoxCitizenship = new ComboBox();
-            comboBoxCitizenship.Location = new Point(20, 50);
+            comboBoxCitizenship.Location = new Point(20, 80);
             comboBoxCitizenship.Width = 200;
-            panelLoggedIn.Controls.Add(comboBoxCitizenship);
+            panelUser.Controls.Add(comboBoxCitizenship);
 
-            var citizenships = dbHelper.GetCitizenships();
+            var citizenships = dbHelper.GetData("citizenships");
             foreach (var citizenship in citizenships)
             {
                 comboBoxCitizenship.Items.Add(citizenship.Value);
             }
 
             checkBoxesConditions = new List<CheckBox>();
-            var conditions = dbHelper.GetConditions();
-            int y = 80;
+            var conditions = dbHelper.GetData("conditions");
+            int y = 110;
             foreach (var condition in conditions)
             {
                 var checkBox = new CheckBox();
@@ -185,7 +214,7 @@ namespace pis2
                 checkBox.Tag = condition.Key;
                 checkBox.Location = new Point(20, y);
                 checkBox.AutoSize = true;
-                panelLoggedIn.Controls.Add(checkBox);
+                panelUser.Controls.Add(checkBox);
                 checkBoxesConditions.Add(checkBox);
                 y += 30;
             }
@@ -194,13 +223,31 @@ namespace pis2
             buttonSave.Text = "Сохранить";
             buttonSave.Location = new Point(20, y + 20);
             buttonSave.Click += buttonSave_Click;
-            panelLoggedIn.Controls.Add(buttonSave);
+            panelUser.Controls.Add(buttonSave);
 
             buttonLogout = new Button();
             buttonLogout.Text = "Выход";
-            buttonLogout.Dock = DockStyle.Bottom;
+            buttonLogout.Location = new Point(100, y + 20);
             buttonLogout.Click += buttonLogout_Click;
-            panelLoggedIn.Controls.Add(buttonLogout);
+            panelUser.Controls.Add(buttonLogout);
+
+            // ROADMAP PANEL CONTANT
+            Label labelRoadmap = new Label();
+            labelRoadmap.Text = "Выберите цель обращения к программе";
+            labelRoadmap.Location = new Point(20, 50);
+            labelRoadmap.AutoSize = true;
+            panelRoadmap.Controls.Add(labelRoadmap);
+
+            ComboBox comboBoxTargets = new ComboBox();
+            comboBoxTargets.Location = new Point(20, 80);
+            comboBoxTargets.Width = 550;
+            panelRoadmap.Controls.Add(comboBoxTargets);
+
+            var targets = dbHelper.GetData("targets");
+            foreach (var target in targets)
+            {
+                comboBoxTargets.Items.Add(target.Value);
+            }
         }
 
         private void LoadData(string username)
@@ -209,7 +256,7 @@ namespace pis2
 
             if (citizenshipId != -1)
             {
-                var chosenCitizenship = dbHelper.GetCitizenships().FirstOrDefault(c => c.Key == citizenshipId);
+                var chosenCitizenship = dbHelper.GetData("citizenships").FirstOrDefault(c => c.Key == citizenshipId);
                 if (chosenCitizenship.Value != null) { comboBoxCitizenship.SelectedItem = chosenCitizenship.Value; }
             }
 
@@ -226,7 +273,7 @@ namespace pis2
             if (comboBoxCitizenship.SelectedItem != null)
             {
                 var chosenCitizenshipName = comboBoxCitizenship.SelectedItem.ToString();
-                var chosenCitizenship = dbHelper.GetCitizenships()
+                var chosenCitizenship = dbHelper.GetData("citizenships")
                     .FirstOrDefault(c => c.Value == chosenCitizenshipName);
 
                 if (!chosenCitizenship.Equals(default(KeyValuePair<int, string>)))
@@ -245,28 +292,15 @@ namespace pis2
             MessageBox.Show("Данные сохранены!");
         }
 
-        private void CenterPanelContent(Panel panel)
-        {
-            foreach (Control control in panel.Controls)
-            {
-                control.Left = (panel.Width - control.Width) / 2;
-            }
-        }
-
-        private void UpdateUI()
-        {
-            buttonTabLogin.Visible = !isLoggedIn;
-            buttonTabRegister.Visible = !isLoggedIn;
-            buttonLogout.Visible = isLoggedIn;
-            panelLogin.Visible = !isLoggedIn && buttonTabLogin.Visible;
-            panelRegister.Visible = !isLoggedIn && buttonTabRegister.Visible;
-            panelLoggedIn.Visible = isLoggedIn;
-        }
-
         private void ShowLoginPanel()
         {
+            panelTabsLogin.Visible = true;
             panelLogin.Visible = true;
             panelRegister.Visible = false;
+
+            panelTabsLoggedIn.Visible = false;
+            panelUser.Visible = false;
+            //panelRoadmap.Visible = false;
 
             labelLoginError.Text = "";
             textboxLoginLogin.Text = "";
@@ -275,8 +309,8 @@ namespace pis2
 
         private void ShowRegisterPanel()
         {
-            panelLogin.Visible = false;
             panelRegister.Visible = true;
+            panelLogin.Visible = false;
 
             labelRegisterError.Text = "";
             textboxRegisterLogin.Text = "";
@@ -284,124 +318,94 @@ namespace pis2
             textboxRegisterPasswordConfirm.Text = "";
         }
 
-        private void ShowLoggedInPanel()
+        private void ShowUserPanel()
         {
+            panelTabsLogin.Visible = false;
             panelLogin.Visible = false;
             panelRegister.Visible = false;
-            panelLoggedIn.Visible = true;
+
+            panelTabsLoggedIn.Visible = true;
+            panelUser.Visible = true;
             LoadData(textboxLoginLogin.Text);
         }
 
-        private void buttonTabLogin_Click(object sender, EventArgs e) { ShowLoginPanel(); }
+        private void ShowRoadmapPanel()
+        {
+            panelRoadmap.Visible = true;
+            panelUser.Visible = false;
+        }
 
-        private void buttonTabRegister_Click(object sender, EventArgs e) { ShowRegisterPanel(); }
+        private void buttonTabLogin_Click(object sender, EventArgs e)
+        {
+            ShowLoginPanel();
+            CenterPanelContent(panelLogin);
+        }
+
+        private void buttonTabRegister_Click(object sender, EventArgs e)
+        {
+            ShowRegisterPanel();
+            CenterPanelContent(panelRegister);
+        }
+
+        private void buttonTabUser_Click(object sender, EventArgs e)
+        {
+            ShowUserPanel();
+        }
+
+        private void buttonTabRoadmap_Click(object sender, EventArgs e)
+        {
+            ShowRoadmapPanel();
+        }
 
         private void buttonLogin_Click(object sender, EventArgs e)
         {
             string login = textboxLoginLogin.Text;
             string password = textboxLoginPassword.Text;
+            string errorMessage;
 
-            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            if (dbHelper.LoginUser(login, password, out errorMessage))
             {
-                labelLoginError.Text = "Заполните все поля!";
-                return;
+                isLoggedIn = true;
+                ShowUserPanel();
+                LoadData(login);
             }
-
-            using (var conn = new NpgsqlConnection(connectionString))
-            {
-                conn.Open();
-                using (var cmd = new NpgsqlCommand("SELECT * FROM users WHERE username = @username", conn))
-                {
-                    cmd.Parameters.AddWithValue("username", login);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (!reader.Read())
-                        {
-                            labelLoginError.Text = "Такого аккаунта не существует!";
-                            return;
-                        }
-
-                        string dbPassword = reader["password"].ToString();
-                        if (dbPassword != password)
-                        {
-                            labelLoginError.Text = "Неверно введен пароль!";
-                            return;
-                        }
-
-                        isLoggedIn = true;
-                        UpdateUI();
-                        ShowLoggedInPanel();
-                        LoadData(login);
-                    }
-                }
-            }
+            else { labelLoginError.Text = errorMessage; }
         }
 
         private void buttonRegister_Click(object sender, EventArgs e)
         {
             string login = textboxRegisterLogin.Text;
             string password = textboxRegisterPassword.Text;
-            string password2 = textboxRegisterPasswordConfirm.Text;
+            string passwordConfirm = textboxRegisterPasswordConfirm.Text;
+            string errorMessage;
 
-            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(password2))
+            if (dbHelper.RegisterUser(login, password, passwordConfirm, out errorMessage))
             {
-                labelRegisterError.Text = "Заполните все поля!";
-                return;
+                ShowLoginPanel();
             }
-
-            using (var conn = new NpgsqlConnection(connectionString))
-            {
-                conn.Open();
-                using (var cmd = new NpgsqlCommand("SELECT * FROM users WHERE username = @username", conn))
-                {
-                    cmd.Parameters.AddWithValue("username", login);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            labelRegisterError.Text = "Такой логин уже занят!";
-                            return;
-                        }
-                    }
-                }
-
-                if (password.Length < 8)
-                {
-                    labelRegisterError.Text = "Пароль должен содержать 8 и более символов!";
-                    return;
-                }
-
-                if (password != password2)
-                {
-                    labelRegisterError.Text = "Пароли не совпадают!";
-                    return;
-                }
-
-                using (var cmd = new NpgsqlCommand("INSERT INTO users (username, password) VALUES (@username, @password)", conn))
-                {
-                    cmd.Parameters.AddWithValue("username", login);
-                    cmd.Parameters.AddWithValue("password", password);
-                    try
-                    {
-                        cmd.ExecuteNonQuery();
-                        ShowLoginPanel();
-                    }
-                    catch (PostgresException ex) { labelRegisterError.Text = "Ошибка: " + ex.Message; }
-                }
-            }
+            else { labelRegisterError.Text = errorMessage; }
         }
 
         private void buttonLogout_Click(object sender, EventArgs e)
         {
             isLoggedIn = false;
-            UpdateUI();
             ShowLoginPanel();
+        }
+
+        private void CenterPanelContent(Panel panel)
+        {
+            foreach (Control control in panel.Controls)
+            {
+                control.Left = (panel.Width - control.Width) / 2;
+            }
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
             buttonTabLogin.Width = this.ClientSize.Width / 2;
             buttonTabRegister.Width = this.ClientSize.Width / 2;
+            buttonTabUser.Width = this.ClientSize.Width / 2;
+            buttonTabRoadmap.Width = this.ClientSize.Width / 2;
 
             CenterPanelContent(panelLogin);
             CenterPanelContent(panelRegister);

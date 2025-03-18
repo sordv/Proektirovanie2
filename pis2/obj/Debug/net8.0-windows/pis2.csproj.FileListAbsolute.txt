@@ -18,4 +18,5 @@ C:\Users\user\source\repos\pis2\pis2\bin\Debug\net8.0-windows\Microsoft.Extensio
 C:\Users\user\source\repos\pis2\pis2\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\user\source\repos\pis2\pis2\bin\Debug\net8.0-windows\Npgsql.dll
 C:\Users\user\source\repos\pis2\pis2\obj\Debug\net8.0-windows\pis2.csproj.Up2Date
+C:\Users\user\source\repos\pis2\pis2\obj\Debug\net8.0-windows\pis2.sourcelink.json
 C:\Users\user\source\repos\pis2\pis2\obj\Debug\net8.0-windows\pis2.MainForm.resources

@@ -13,40 +13,132 @@ namespace pis2
             this.connectionString = connectionString;
         }
 
-        public List<KeyValuePair<int, string>> GetCitizenships()
+        public bool LoginUser(string login, string password, out string errorMessage)
         {
-            var citizenships = new List<KeyValuePair<int, string>>();
+            errorMessage = string.Empty;
+
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            {
+                errorMessage = "Заполните все поля!";
+                return false;
+            }
+
             using (var conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (var cmd = new NpgsqlCommand("SELECT id, name FROM citizenship", conn))
-                using (var reader = cmd.ExecuteReader())
+                using (var cmd = new NpgsqlCommand("SELECT * FROM users WHERE username = @username", conn))
                 {
-                    while (reader.Read())
+                    cmd.Parameters.AddWithValue("username", login);
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        citizenships.Add(new KeyValuePair<int, string>(reader.GetInt32(0), reader.GetString(1)));
+                        if (!reader.Read())
+                        {
+                            errorMessage = "Такого аккаунта не существует!";
+                            return false;
+                        }
+
+                        string dbPassword = reader["password"].ToString();
+                        if (dbPassword != password)
+                        {
+                            errorMessage = "Неверно введен пароль!";
+                            return false;
+                        }
                     }
                 }
             }
-            return citizenships;
+
+            return true;
         }
 
-        public List<KeyValuePair<int, string>> GetConditions()
+        public bool RegisterUser(string login, string password, string passwordConfirm, out string errorMessage)
         {
-            var conditions = new List<KeyValuePair<int, string>>();
+            errorMessage = string.Empty;
+
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(passwordConfirm))
+            {
+                errorMessage = "Заполните все поля!";
+                return false;
+            }
+
+            if (password.Length < 8)
+            {
+                errorMessage = "Пароль должен содержать 8 и более символов!";
+                return false;
+            }
+
+            if (password != passwordConfirm)
+            {
+                errorMessage = "Пароли не совпадают!";
+                return false;
+            }
+
             using (var conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (var cmd = new NpgsqlCommand("SELECT id, value FROM conditions", conn))
+                using (var cmd = new NpgsqlCommand("SELECT * FROM users WHERE username = @username", conn))
+                {
+                    cmd.Parameters.AddWithValue("username", login);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            errorMessage = "Такой логин уже занят!";
+                            return false;
+                        }
+                    }
+                }
+
+                using (var cmd = new NpgsqlCommand("INSERT INTO users (username, password) VALUES (@username, @password)", conn))
+                {
+                    cmd.Parameters.AddWithValue("username", login);
+                    cmd.Parameters.AddWithValue("password", password);
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                    catch (PostgresException ex)
+                    {
+                        errorMessage = "Ошибка: " + ex.Message;
+                        return false;
+                    }
+                }
+            }
+        }
+
+        public List<KeyValuePair<int, string>> GetData(string table)
+        {
+            var data = new List<KeyValuePair<int, string>>();
+            string querry = "";
+
+            switch (table)
+            {
+                case "citizenships":
+                    querry = "SELECT id, name FROM citizenships";
+                    break;
+                case "conditions":
+                    querry = "SELECT id, value FROM conditions";
+                    break;
+                case "targets":
+                    querry = "SELECT id, name FROM targets";
+                    break;
+                default:
+                    throw new ArgumentException("Incorrect table name!");
+            }
+
+            using (var conn = new NpgsqlConnection(connectionString))
+            {
+                conn.Open();
+                using (var cmd = new NpgsqlCommand(querry, conn))
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        conditions.Add(new KeyValuePair<int, string>(reader.GetInt32(0), reader.GetString(1)));
+                        data.Add(new KeyValuePair<int, string>(reader.GetInt32(0), reader.GetString(1)));
                     }
                 }
             }
-            return conditions;
+            return data;
         }
 
         public void UpdateUser(string username, int citizenship, int[] conditions)
