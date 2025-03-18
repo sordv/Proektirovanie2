@@ -36,7 +36,7 @@
               "RelativeDocumentMoniker": "pis2\\DatabaseHelper.cs",
               "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\DatabaseHelper.cs",
               "RelativeToolTip": "pis2\\DatabaseHelper.cs",
-              "ViewState": "AgIAAF8AAAAAAAAAAAAlwHAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAIsAAAAAAAAAAAAAAJQAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-16T18:56:29.454Z",
               "EditorCaption": ""
@@ -49,7 +49,7 @@
               "RelativeDocumentMoniker": "pis2\\MainForm.cs",
               "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\MainForm.cs",
               "RelativeToolTip": "pis2\\MainForm.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAhwAQBAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAO0AAAAAAAAAAAAewP0AAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-16T18:56:13.487Z",
               "EditorCaption": ""
@@ -64,8 +64,7 @@
               "RelativeToolTip": "pis2\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-16T13:29:58.62Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-16T13:29:58.62Z"
             }
           ]
         }

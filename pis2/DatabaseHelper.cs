@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Npgsql;
 
 namespace pis2
@@ -138,30 +139,31 @@ namespace pis2
                     }
                 }
             }
-            return data;
+            return data.OrderBy(kvp => kvp.Value).ToList(); ;
         }
 
-        public void UpdateUser(string username, int citizenship, int[] conditions)
+        public void UpdateUser(string username, int citizenship, int[] conditions, DateTime? entry)
         {
             using (var conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (var cmd = new NpgsqlCommand("UPDATE users SET citizenship = @citizenship, conditions = @conditions WHERE username = @username", conn))
+                using (var cmd = new NpgsqlCommand("UPDATE users SET citizenship = @citizenship, conditions = @conditions, entry = @entry WHERE username = @username", conn))
                 {
                     cmd.Parameters.AddWithValue("citizenship", citizenship);
                     cmd.Parameters.AddWithValue("conditions", conditions);
+                    cmd.Parameters.AddWithValue("entry", entry.HasValue ? (object)entry.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("username", username);
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        public (int Citizenship, int[] Conditions) GetUserData(string username)
+        public (int Citizenship, int[] Conditions, DateTime? EntryDate) GetUserData(string username)
         {
             using (var conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (var cmd = new NpgsqlCommand("SELECT citizenship, conditions FROM users WHERE username = @username", conn))
+                using (var cmd = new NpgsqlCommand("SELECT citizenship, conditions, entry FROM users WHERE username = @username", conn))
                 {
                     cmd.Parameters.AddWithValue("username", username);
                     using (var reader = cmd.ExecuteReader())
@@ -175,12 +177,13 @@ namespace pis2
                                 var conditionsStrings = (string[])reader.GetValue(1);
                                 conditions = conditionsStrings.Select(int.Parse).ToArray();
                             }
-                            return (citizenship, conditions);
+                            DateTime? entryDate = reader.IsDBNull(2) ? (DateTime?)null : reader.GetDateTime(2);
+                            return (citizenship, conditions, entryDate);
                         }
                     }
                 }
             }
-            return (-1, Array.Empty<int>());
+            return (-1, Array.Empty<int>(), null);
         }
     }
 }
