@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("pis2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5b203488785e062f0503afce9efc5f9a5d0ae787")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8b9334a0a3525e6adc801834a7987ca98eb7b3f6")]
 [assembly: System.Reflection.AssemblyProductAttribute("pis2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("pis2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

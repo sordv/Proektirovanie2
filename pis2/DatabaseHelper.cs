@@ -185,5 +185,66 @@ namespace pis2
             }
             return (-1, Array.Empty<int>(), null);
         }
+
+        public List<Rule> GetRulesByTarget(int targetId)
+        {
+            var rules = new List<Rule>();
+            using (var conn = new NpgsqlConnection(connectionString))
+            {
+                conn.Open();
+                using (var cmd = new NpgsqlCommand("SELECT * FROM rules WHERE target = @target", conn))
+                {
+                    cmd.Parameters.AddWithValue("target", targetId);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var rule = new Rule
+                            {
+                                Id = reader.GetInt32(0),
+                                Target = reader.GetInt32(1),
+                                Citizenship = reader.GetFieldValue<int[]>(2),
+                                Condition = reader.GetFieldValue<int[]>(3),
+                                //RoadmapItem = reader.GetInt32(4)
+                                RoadmapItem = reader.GetFieldValue<int[]>(4)
+                            };
+                            rules.Add(rule);
+                        }
+                    }
+                }
+            }
+            return rules;
+        }
+
+        public List<KeyValuePair<int, string>> GetRoadmapItems(int[] itemIds)
+        {
+            var items = new List<KeyValuePair<int, string>>();
+            using (var conn = new NpgsqlConnection(connectionString))
+            {
+                conn.Open();
+                using (var cmd = new NpgsqlCommand("SELECT id, value FROM roadmapitems WHERE id = ANY(@ids)", conn))
+                {
+                    cmd.Parameters.AddWithValue("ids", itemIds);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            items.Add(new KeyValuePair<int, string>(reader.GetInt32(0), reader.GetString(1)));
+                        }
+                    }
+                }
+            }
+            return items;
+        }
+    }
+
+    public class Rule
+    {
+        public int Id { get; set; }
+        public int Target { get; set; }
+        public int[] Citizenship { get; set; }
+        public int[] Condition { get; set; }
+        public int[] RoadmapItem { get; set; }
     }
 }
+

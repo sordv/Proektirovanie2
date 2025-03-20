@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
+using System.Web;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
 using Npgsql;
 
 namespace pis2
@@ -427,7 +430,26 @@ namespace pis2
 
         private void buttonGenerateRoadmap_Click(Object sender, EventArgs e)
         {
+            if (comboBoxTargets.SelectedItem == null)
+            {
+                MessageBox.Show("Выберите цель обращения к программе!");
+                return;
+            }
 
+            var selectedTarget = comboBoxTargets.SelectedItem.ToString();
+            var targetId = dbHelper.GetData("targets").FirstOrDefault(t => t.Value == selectedTarget).Key;
+            var (citizenshipId, conditionsIds, _) = dbHelper.GetUserData(textboxLoginLogin.Text);
+            var rules = dbHelper.GetRulesByTarget(targetId);
+            var applicableRules = rules.Where(rule =>
+            (rule.Citizenship.Length == 0 || rule.Citizenship.Contains(citizenshipId)) &&
+            (rule.Condition.Length == 0 || rule.Condition.All(condition => conditionsIds.Contains(condition)))).ToList();
+            //var roadmapItems = dbHelper.GetRoadmapItems(applicableRules.Select(r => r.RoadmapItem).ToArray());
+            var roadmapItemIds = applicableRules.SelectMany(rule => rule.RoadmapItem).Distinct().ToArray();
+            var roadmapItems = dbHelper.GetRoadmapItems(roadmapItemIds);
+
+            var roadmapMessage = new StringBuilder("Дорожная карта:\n");
+            foreach (var item in roadmapItems) { roadmapMessage.AppendLine($"- {item.Value}"); }
+            MessageBox.Show(roadmapMessage.ToString(), "Дорожная карта", MessageBoxButtons.OK);
         }
 
         private void buttonEditRoadmap_Click(object sender, EventArgs e)
