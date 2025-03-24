@@ -1,7 +1,3 @@
-using Npgsql;
-using System;
-using System.Windows.Forms;
-
 namespace pis2
 {
     internal static class Program

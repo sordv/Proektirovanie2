@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.Data;
 using Npgsql;
 
 namespace pis2
@@ -9,18 +7,15 @@ namespace pis2
     {
         private string connectionString;
 
-        public DatabaseHelper(string connectionString)
-        {
-            this.connectionString = connectionString;
-        }
+        public DatabaseHelper(string connection) { connectionString = connection; }
 
-        public bool LoginUser(string login, string password, out string errorMessage)
+        public bool LoginUser(string login, string password, out string error)
         {
-            errorMessage = string.Empty;
+            error = string.Empty;
 
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             {
-                errorMessage = "Заполните все поля!";
+                error = "Заполните все поля!";
                 return false;
             }
 
@@ -34,42 +29,40 @@ namespace pis2
                     {
                         if (!reader.Read())
                         {
-                            errorMessage = "Такого аккаунта не существует!";
+                            error = "Такого аккаунта не существует!";
                             return false;
                         }
-
-                        string dbPassword = reader["password"].ToString();
-                        if (dbPassword != password)
+                        string realPassword = reader["password"].ToString();
+                        if (realPassword != password)
                         {
-                            errorMessage = "Неверно введен пароль!";
+                            error = "Неверно введен пароль!";
                             return false;
                         }
                     }
                 }
             }
-
             return true;
         }
 
-        public bool RegisterUser(string login, string password, string passwordConfirm, out string errorMessage)
+        public bool RegisterUser(string login, string password, string passwordConfirm, out string error)
         {
-            errorMessage = string.Empty;
+            error = string.Empty;
 
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(passwordConfirm))
             {
-                errorMessage = "Заполните все поля!";
+                error = "Заполните все поля!";
                 return false;
             }
 
             if (password.Length < 8)
             {
-                errorMessage = "Пароль должен содержать 8 и более символов!";
+                error = "Пароль должен содержать 8 и более символов!";
                 return false;
             }
 
             if (password != passwordConfirm)
             {
-                errorMessage = "Пароли не совпадают!";
+                error = "Пароли не совпадают!";
                 return false;
             }
 
@@ -83,7 +76,7 @@ namespace pis2
                     {
                         if (reader.Read())
                         {
-                            errorMessage = "Такой логин уже занят!";
+                            error = "Такой логин уже занят!";
                             return false;
                         }
                     }
@@ -100,7 +93,7 @@ namespace pis2
                     }
                     catch (PostgresException ex)
                     {
-                        errorMessage = "Ошибка: " + ex.Message;
+                        error = "Ошибка: " + ex.Message;
                         return false;
                     }
                 }
@@ -109,19 +102,19 @@ namespace pis2
 
         public List<KeyValuePair<int, string>> GetData(string table)
         {
+            string query = "";
             var data = new List<KeyValuePair<int, string>>();
-            string querry = "";
 
             switch (table)
             {
                 case "citizenships":
-                    querry = "SELECT id, name FROM citizenships";
+                    query = "SELECT id, name FROM citizenships";
                     break;
                 case "conditions":
-                    querry = "SELECT id, value FROM conditions";
+                    query = "SELECT id, value FROM conditions";
                     break;
                 case "targets":
-                    querry = "SELECT id, name FROM targets";
+                    query = "SELECT id, name FROM targets";
                     break;
                 default:
                     throw new ArgumentException("Incorrect table name!");
@@ -130,7 +123,7 @@ namespace pis2
             using (var conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (var cmd = new NpgsqlCommand(querry, conn))
+                using (var cmd = new NpgsqlCommand(query, conn))
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
@@ -139,7 +132,7 @@ namespace pis2
                     }
                 }
             }
-            return data.OrderBy(kvp => kvp.Value).ToList(); ;
+            return data.OrderBy(item => item.Value).ToList();
         }
 
         public void UpdateUser(string username, int citizenship, int[] conditions, DateTime? entry)
@@ -172,11 +165,7 @@ namespace pis2
                         {
                             int citizenship = reader.IsDBNull(0) ? -1 : reader.GetInt32(0);
                             int[] conditions = Array.Empty<int>();
-                            if (!reader.IsDBNull(1))
-                            {
-                                var conditionsStrings = (string[])reader.GetValue(1);
-                                conditions = conditionsStrings.Select(int.Parse).ToArray();
-                            }
+                            if (!reader.IsDBNull(1)) { conditions = (int[])reader.GetValue(1); }
                             DateTime? entryDate = reader.IsDBNull(2) ? (DateTime?)null : reader.GetDateTime(2);
                             return (citizenship, conditions, entryDate);
                         }
@@ -205,7 +194,6 @@ namespace pis2
                                 Target = reader.GetInt32(1),
                                 Citizenship = reader.GetFieldValue<int[]>(2),
                                 Condition = reader.GetFieldValue<int[]>(3),
-                                //RoadmapItem = reader.GetInt32(4)
                                 RoadmapItem = reader.GetFieldValue<int[]>(4)
                             };
                             rules.Add(rule);
@@ -216,7 +204,7 @@ namespace pis2
             return rules;
         }
 
-        public List<KeyValuePair<int, string>> GetRoadmapItems(int[] itemIds)
+        public List<KeyValuePair<int, string>> GetRoadmapItems(int[] ids)
         {
             var items = new List<KeyValuePair<int, string>>();
             using (var conn = new NpgsqlConnection(connectionString))
@@ -224,7 +212,7 @@ namespace pis2
                 conn.Open();
                 using (var cmd = new NpgsqlCommand("SELECT id, value FROM roadmapitems WHERE id = ANY(@ids)", conn))
                 {
-                    cmd.Parameters.AddWithValue("ids", itemIds);
+                    cmd.Parameters.AddWithValue("ids", ids);
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -237,14 +225,4 @@ namespace pis2
             return items;
         }
     }
-
-    public class Rule
-    {
-        public int Id { get; set; }
-        public int Target { get; set; }
-        public int[] Citizenship { get; set; }
-        public int[] Condition { get; set; }
-        public int[] RoadmapItem { get; set; }
-    }
 }
-

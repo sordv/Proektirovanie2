@@ -1,12 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Web;
-using System.Windows.Forms;
-using Microsoft.VisualBasic;
-using Npgsql;
 
 namespace pis2
 {
@@ -38,7 +30,9 @@ namespace pis2
 
         private Panel panelUser;
         private Label labelInfo;
+        private Label labelCitizenship;
         private ComboBox comboBoxCitizenship;
+        private Label labelDataEntry;
         private DateTimePicker dateTimePickerEntry;
         private List<CheckBox> checkBoxesConditions;
         private Button buttonSave;
@@ -201,23 +195,30 @@ namespace pis2
             labelInfo.AutoSize = true;
             panelUser.Controls.Add(labelInfo);
 
+            labelCitizenship = new Label();
+            labelInfo.Text = "Укажите страну гражданства:";
+            labelInfo.Location = new Point(20, 80);
+            panelUser.Controls.Add(labelCitizenship);
+
             comboBoxCitizenship = new ComboBox();
-            comboBoxCitizenship.Location = new Point(20, 80);
+            comboBoxCitizenship.Location = new Point(200, 80);
             comboBoxCitizenship.Width = 250;
             comboBoxCitizenship.DropDownStyle = ComboBoxStyle.DropDownList;
             panelUser.Controls.Add(comboBoxCitizenship);
 
+            labelDataEntry = new Label();
+            labelDataEntry.Text = "Укажите дату въезда в РФ:";
+            labelDataEntry.Location = new Point(20, 110);
+            panelUser.Controls.Add(labelDataEntry);
+
             dateTimePickerEntry = new DateTimePicker();
-            dateTimePickerEntry.Location = new Point(20, 110);
+            dateTimePickerEntry.Location = new Point(200, 110);
             dateTimePickerEntry.Format = DateTimePickerFormat.Short;
             dateTimePickerEntry.Width = 250;
             panelUser.Controls.Add(dateTimePickerEntry);
 
             var citizenships = dbHelper.GetData("citizenships");
-            foreach (var citizenship in citizenships)
-            {
-                comboBoxCitizenship.Items.Add(citizenship.Value);
-            }
+            foreach (var citizenship in citizenships) { comboBoxCitizenship.Items.Add(citizenship.Value); }
 
             checkBoxesConditions = new List<CheckBox>();
             var conditions = dbHelper.GetData("conditions");
@@ -229,6 +230,7 @@ namespace pis2
                 checkBox.Tag = condition.Key;
                 checkBox.Location = new Point(20, y);
                 checkBox.AutoSize = true;
+
                 panelUser.Controls.Add(checkBox);
                 checkBoxesConditions.Add(checkBox);
                 y += 30;
@@ -260,10 +262,7 @@ namespace pis2
             panelRoadmap.Controls.Add(comboBoxTargets);
 
             var targets = dbHelper.GetData("targets");
-            foreach (var target in targets)
-            {
-                comboBoxTargets.Items.Add(target.Value);
-            }
+            foreach (var target in targets) { comboBoxTargets.Items.Add(target.Value); }
 
             buttonGenerateRoadmap = new Button();
             buttonGenerateRoadmap.Text = "Показать дорожную карту";
@@ -274,29 +273,29 @@ namespace pis2
 
             buttonEditRoadmap = new Button();
             buttonEditRoadmap.Text = "Редактировать правила";
-            buttonEditRoadmap.Location = new Point(20, 175);
+            buttonEditRoadmap.Location = new Point(150, 130);
             buttonEditRoadmap.Size = new Size(120, 40);
             buttonEditRoadmap.Click += buttonEditRoadmap_Click;
             panelRoadmap.Controls.Add(buttonEditRoadmap);
         }
 
-        private void LoadData(string username)
+        private void LoadDataUserPanel(string username)
         {
             var (citizenshipId, conditionsIds, entryDate) = dbHelper.GetUserData(username);
 
             if (citizenshipId != -1)
             {
-                var chosenCitizenship = dbHelper.GetData("citizenships").FirstOrDefault(c => c.Key == citizenshipId);
+                var chosenCitizenship = dbHelper.GetData("citizenships").FirstOrDefault(item => item.Key == citizenshipId);
                 if (chosenCitizenship.Value != null) { comboBoxCitizenship.SelectedItem = chosenCitizenship.Value; }
             }
 
-            if (entryDate.HasValue) {dateTimePickerEntry.Value = entryDate.Value; }
-
             foreach (var conditionId in conditionsIds)
             {
-                var checkBox = checkBoxesConditions.FirstOrDefault(cb => (int)cb.Tag == conditionId);
+                var checkBox = checkBoxesConditions.FirstOrDefault(item => (int)item.Tag == conditionId);
                 if (checkBox != null) { checkBox.Checked = true; }
             }
+
+            if (entryDate.HasValue) { dateTimePickerEntry.Value = entryDate.Value; }
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -305,18 +304,12 @@ namespace pis2
             if (comboBoxCitizenship.SelectedItem != null)
             {
                 var chosenCitizenshipName = comboBoxCitizenship.SelectedItem.ToString();
-                var chosenCitizenship = dbHelper.GetData("citizenships")
-                    .FirstOrDefault(c => c.Value == chosenCitizenshipName);
-
-                if (!chosenCitizenship.Equals(default(KeyValuePair<int, string>)))
-                {
-                    chosenCitizenshipId = chosenCitizenship.Key;
-                }
+                chosenCitizenshipId = dbHelper.GetData("citizenships").FirstOrDefault(item => item.Value == chosenCitizenshipName).Key;
             }
 
             var chosenConditions = checkBoxesConditions
-                .Where(cb => cb.Checked)
-                .Select(cb => (int)cb.Tag)
+                .Where(item => item.Checked)
+                .Select(item => (int)item.Tag)
                 .ToArray();
 
             DateTime? entryDate = dateTimePickerEntry.Value;
@@ -334,11 +327,12 @@ namespace pis2
 
             panelTabsLoggedIn.Visible = false;
             panelUser.Visible = false;
-            //panelRoadmap.Visible = false;
 
             labelLoginError.Text = "";
             textboxLoginLogin.Text = "";
             textboxLoginPassword.Text = "";
+
+            CenterPanelContent(panelLogin);
         }
 
         private void ShowRegisterPanel()
@@ -350,17 +344,19 @@ namespace pis2
             textboxRegisterLogin.Text = "";
             textboxRegisterPassword.Text = "";
             textboxRegisterPasswordConfirm.Text = "";
+
+            CenterPanelContent(panelRegister);
         }
 
         private void ShowUserPanel()
         {
             panelTabsLogin.Visible = false;
             panelLogin.Visible = false;
-            panelRegister.Visible = false;
 
             panelTabsLoggedIn.Visible = true;
             panelUser.Visible = true;
-            LoadData(textboxLoginLogin.Text);
+            panelRoadmap.Visible = false;
+            LoadDataUserPanel(textboxLoginLogin.Text);
         }
 
         private void ShowRoadmapPanel()
@@ -369,27 +365,13 @@ namespace pis2
             panelUser.Visible = false;
         }
 
-        private void buttonTabLogin_Click(object sender, EventArgs e)
-        {
-            ShowLoginPanel();
-            CenterPanelContent(panelLogin);
-        }
+        private void buttonTabLogin_Click(object sender, EventArgs e) { ShowLoginPanel(); }
 
-        private void buttonTabRegister_Click(object sender, EventArgs e)
-        {
-            ShowRegisterPanel();
-            CenterPanelContent(panelRegister);
-        }
+        private void buttonTabRegister_Click(object sender, EventArgs e) { ShowRegisterPanel(); }
 
-        private void buttonTabUser_Click(object sender, EventArgs e)
-        {
-            ShowUserPanel();
-        }
+        private void buttonTabUser_Click(object sender, EventArgs e) { ShowUserPanel(); }
 
-        private void buttonTabRoadmap_Click(object sender, EventArgs e)
-        {
-            ShowRoadmapPanel();
-        }
+        private void buttonTabRoadmap_Click(object sender, EventArgs e) { ShowRoadmapPanel(); }
 
         private void buttonLogin_Click(object sender, EventArgs e)
         {
@@ -401,9 +383,8 @@ namespace pis2
             {
                 isLoggedIn = true;
                 ShowUserPanel();
-                LoadData(login);
-                if (login == "admin") { buttonEditRoadmap.Visible = true; }
-                else { buttonEditRoadmap.Visible = false; }
+                LoadDataUserPanel(login);
+                buttonEditRoadmap.Visible = (login == "admin");
             }
             else { labelLoginError.Text = errorMessage; }
         }
@@ -415,10 +396,7 @@ namespace pis2
             string passwordConfirm = textboxRegisterPasswordConfirm.Text;
             string errorMessage;
 
-            if (dbHelper.RegisterUser(login, password, passwordConfirm, out errorMessage))
-            {
-                ShowLoginPanel();
-            }
+            if (dbHelper.RegisterUser(login, password, passwordConfirm, out errorMessage)) { ShowLoginPanel(); }
             else { labelRegisterError.Text = errorMessage; }
         }
 
@@ -436,33 +414,32 @@ namespace pis2
                 return;
             }
 
-            var selectedTarget = comboBoxTargets.SelectedItem.ToString();
-            var targetId = dbHelper.GetData("targets").FirstOrDefault(t => t.Value == selectedTarget).Key;
-            var (citizenshipId, conditionsIds, _) = dbHelper.GetUserData(textboxLoginLogin.Text);
-            var rules = dbHelper.GetRulesByTarget(targetId);
-            var applicableRules = rules.Where(rule =>
+            var chosenTargetName = comboBoxTargets.SelectedItem.ToString();
+            var chosenTargetId = dbHelper.GetData("targets").FirstOrDefault(item => item.Value == chosenTargetName).Key;
+            var rules = dbHelper.GetRulesByTarget(chosenTargetId);
+
+            var (citizenshipId, conditionsIds, entryDate) = dbHelper.GetUserData(textboxLoginLogin.Text);
+
+            var usedRules = rules.Where(rule =>
             (rule.Citizenship.Length == 0 || rule.Citizenship.Contains(citizenshipId)) &&
             (rule.Condition.Length == 0 || rule.Condition.All(condition => conditionsIds.Contains(condition)))).ToList();
-            //var roadmapItems = dbHelper.GetRoadmapItems(applicableRules.Select(r => r.RoadmapItem).ToArray());
-            var roadmapItemIds = applicableRules.SelectMany(rule => rule.RoadmapItem).Distinct().ToArray();
+            var roadmapItemIds = usedRules.SelectMany(rule => rule.RoadmapItem).Distinct().ToArray();
             var roadmapItems = dbHelper.GetRoadmapItems(roadmapItemIds);
 
-            var roadmapMessage = new StringBuilder("Дорожная карта:\n");
-            foreach (var item in roadmapItems) { roadmapMessage.AppendLine($"- {item.Value}"); }
-            MessageBox.Show(roadmapMessage.ToString(), "Дорожная карта", MessageBoxButtons.OK);
+            var roadmap = new StringBuilder("Дорожная карта:\n");
+            if (roadmapItems.Count == 0) { roadmap.AppendLine("Не предусмотрено"); }
+            foreach (var item in roadmapItems) { roadmap.AppendLine($"- {item.Value}"); }
+            MessageBox.Show(roadmap.ToString(), "Дорожная карта");
         }
 
         private void buttonEditRoadmap_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("Пока нельзя");
         }
 
         private void CenterPanelContent(Panel panel)
         {
-            foreach (Control control in panel.Controls)
-            {
-                control.Left = (panel.Width - control.Width) / 2;
-            }
+            foreach (Control control in panel.Controls) { control.Left = (panel.Width - control.Width) / 2; }
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
