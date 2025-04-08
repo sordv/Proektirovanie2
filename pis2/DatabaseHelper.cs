@@ -110,11 +110,8 @@ namespace pis2
                 case "citizenships":
                     query = "SELECT id, name FROM citizenships";
                     break;
-                case "conditions":
-                    query = "SELECT id, value FROM conditions";
-                    break;
-                case "targets":
-                    query = "SELECT id, name FROM targets";
+                case "flags":
+                    query = "SELECT id, value FROM flags";
                     break;
                 default:
                     throw new ArgumentException("Incorrect table name!");
@@ -135,15 +132,15 @@ namespace pis2
             return data.OrderBy(item => item.Value).ToList();
         }
 
-        public void UpdateUser(string username, int citizenship, int[] conditions, DateTime? entry)
+        public void UpdateUser(string username, int citizenship, int[] flags, DateTime? entry)
         {
             using (var conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (var cmd = new NpgsqlCommand("UPDATE users SET citizenship = @citizenship, conditions = @conditions, entry = @entry WHERE username = @username", conn))
+                using (var cmd = new NpgsqlCommand("UPDATE users SET citizenship = @citizenship, flags = @flags, entry = @entry WHERE username = @username", conn))
                 {
                     cmd.Parameters.AddWithValue("citizenship", citizenship);
-                    cmd.Parameters.AddWithValue("conditions", conditions);
+                    cmd.Parameters.AddWithValue("flags", flags);
                     cmd.Parameters.AddWithValue("entry", entry.HasValue ? (object)entry.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("username", username);
                     cmd.ExecuteNonQuery();
@@ -151,12 +148,12 @@ namespace pis2
             }
         }
 
-        public (int Citizenship, int[] Conditions, DateTime? EntryDate) GetUserData(string username)
+        public (int Citizenship, int[] Flags, DateTime? EntryDate) GetUserData(string username)
         {
             using (var conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (var cmd = new NpgsqlCommand("SELECT citizenship, conditions, entry FROM users WHERE username = @username", conn))
+                using (var cmd = new NpgsqlCommand("SELECT citizenship, flags, entry FROM users WHERE username = @username", conn))
                 {
                     cmd.Parameters.AddWithValue("username", username);
                     using (var reader = cmd.ExecuteReader())
@@ -164,10 +161,10 @@ namespace pis2
                         if (reader.Read())
                         {
                             int citizenship = reader.IsDBNull(0) ? -1 : reader.GetInt32(0);
-                            int[] conditions = Array.Empty<int>();
-                            if (!reader.IsDBNull(1)) { conditions = (int[])reader.GetValue(1); }
+                            int[] flags = Array.Empty<int>();
+                            if (!reader.IsDBNull(1)) { flags = (int[])reader.GetValue(1); }
                             DateTime? entryDate = reader.IsDBNull(2) ? (DateTime?)null : reader.GetDateTime(2);
-                            return (citizenship, conditions, entryDate);
+                            return (citizenship, flags, entryDate);
                         }
                     }
                 }
@@ -175,54 +172,10 @@ namespace pis2
             return (-1, Array.Empty<int>(), null);
         }
 
-        public List<Rule> GetRulesByTarget(int targetId)
+        public User GetUser(string username)
         {
-            var rules = new List<Rule>();
-            using (var conn = new NpgsqlConnection(connectionString))
-            {
-                conn.Open();
-                using (var cmd = new NpgsqlCommand("SELECT * FROM rules WHERE target = @target", conn))
-                {
-                    cmd.Parameters.AddWithValue("target", targetId);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var rule = new Rule
-                            {
-                                Id = reader.GetInt32(0),
-                                Target = reader.GetInt32(1),
-                                Citizenship = reader.GetFieldValue<int[]>(2),
-                                Condition = reader.GetFieldValue<int[]>(3),
-                                RoadmapItem = reader.GetFieldValue<int[]>(4)
-                            };
-                            rules.Add(rule);
-                        }
-                    }
-                }
-            }
-            return rules;
-        }
-
-        public List<KeyValuePair<int, string>> GetRoadmapItems(int[] ids)
-        {
-            var items = new List<KeyValuePair<int, string>>();
-            using (var conn = new NpgsqlConnection(connectionString))
-            {
-                conn.Open();
-                using (var cmd = new NpgsqlCommand("SELECT id, value FROM roadmapitems WHERE id = ANY(@ids)", conn))
-                {
-                    cmd.Parameters.AddWithValue("ids", ids);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            items.Add(new KeyValuePair<int, string>(reader.GetInt32(0), reader.GetString(1)));
-                        }
-                    }
-                }
-            }
-            return items;
+            var (citizenship, flags, entry) = GetUserData(username);
+            return new User(username, citizenship, flags, entry);
         }
     }
 }
