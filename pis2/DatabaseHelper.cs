@@ -1,4 +1,6 @@
-using System.Data;
+п»їusing System.Data;
+using System.Reflection;
+using Microsoft.VisualBasic.ApplicationServices;
 using Npgsql;
 
 namespace pis2
@@ -15,7 +17,7 @@ namespace pis2
 
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             {
-                error = "Заполните все поля!";
+                error = "Р—Р°РїРѕР»РЅРёС‚Рµ РІСЃРµ РїРѕР»СЏ!";
                 return false;
             }
 
@@ -29,13 +31,13 @@ namespace pis2
                     {
                         if (!reader.Read())
                         {
-                            error = "Такого аккаунта не существует!";
+                            error = "РўР°РєРѕРіРѕ Р°РєРєР°СѓРЅС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚!";
                             return false;
                         }
                         string realPassword = reader["password"].ToString();
                         if (realPassword != password)
                         {
-                            error = "Неверно введен пароль!";
+                            error = "РќРµРІРµСЂРЅРѕ РІРІРµРґРµРЅ РїР°СЂРѕР»СЊ!";
                             return false;
                         }
                     }
@@ -50,19 +52,19 @@ namespace pis2
 
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(passwordConfirm))
             {
-                error = "Заполните все поля!";
+                error = "Р—Р°РїРѕР»РЅРёС‚Рµ РІСЃРµ РїРѕР»СЏ!";
                 return false;
             }
 
             if (password.Length < 8)
             {
-                error = "Пароль должен содержать 8 и более символов!";
+                error = "РџР°СЂРѕР»СЊ РґРѕР»Р¶РµРЅ СЃРѕРґРµСЂР¶Р°С‚СЊ 8 Рё Р±РѕР»РµРµ СЃРёРјРІРѕР»РѕРІ!";
                 return false;
             }
 
             if (password != passwordConfirm)
             {
-                error = "Пароли не совпадают!";
+                error = "РџР°СЂРѕР»Рё РЅРµ СЃРѕРІРїР°РґР°СЋС‚!";
                 return false;
             }
 
@@ -76,7 +78,7 @@ namespace pis2
                     {
                         if (reader.Read())
                         {
-                            error = "Такой логин уже занят!";
+                            error = "РўР°РєРѕР№ Р»РѕРіРёРЅ СѓР¶Рµ Р·Р°РЅСЏС‚!";
                             return false;
                         }
                     }
@@ -93,7 +95,7 @@ namespace pis2
                     }
                     catch (PostgresException ex)
                     {
-                        error = "Ошибка: " + ex.Message;
+                        error = "РћС€РёР±РєР°: " + ex.Message;
                         return false;
                     }
                 }
@@ -132,8 +134,15 @@ namespace pis2
             return data.OrderBy(item => item.Value).ToList();
         }
 
-        public void UpdateUser(string username, int citizenship, int[] flags, DateTime? entry)
+        public void UpdateUser(User user)
         {
+            Type userType = typeof(User);
+
+            string username = (string)userType.GetProperty("Login").GetValue(user);
+            int citizenship = (int)userType.GetProperty("Citizenship").GetValue(user);
+            int[] flags = (int[])userType.GetProperty("Flags").GetValue(user);
+            DateTime? entry = (DateTime?)userType.GetProperty("Entry").GetValue(user);
+
             using (var conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();

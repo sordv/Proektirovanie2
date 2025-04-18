@@ -3,7 +3,6 @@ C:\Users\user\source\repos\pis2\pis2\bin\Debug\net8.0-windows\pis2.deps.json
 C:\Users\user\source\repos\pis2\pis2\bin\Debug\net8.0-windows\pis2.runtimeconfig.json
 C:\Users\user\source\repos\pis2\pis2\bin\Debug\net8.0-windows\pis2.dll
 C:\Users\user\source\repos\pis2\pis2\bin\Debug\net8.0-windows\pis2.pdb
-C:\Users\user\source\repos\pis2\pis2\obj\Debug\net8.0-windows\pis2.csproj.GenerateResource.cache
 C:\Users\user\source\repos\pis2\pis2\obj\Debug\net8.0-windows\pis2.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\user\source\repos\pis2\pis2\obj\Debug\net8.0-windows\pis2.AssemblyInfoInputs.cache
 C:\Users\user\source\repos\pis2\pis2\obj\Debug\net8.0-windows\pis2.AssemblyInfo.cs
@@ -19,4 +18,3 @@ C:\Users\user\source\repos\pis2\pis2\bin\Debug\net8.0-windows\Microsoft.Extensio
 C:\Users\user\source\repos\pis2\pis2\bin\Debug\net8.0-windows\Npgsql.dll
 C:\Users\user\source\repos\pis2\pis2\obj\Debug\net8.0-windows\pis2.csproj.Up2Date
 C:\Users\user\source\repos\pis2\pis2\obj\Debug\net8.0-windows\pis2.sourcelink.json
-C:\Users\user\source\repos\pis2\pis2\obj\Debug\net8.0-windows\pis2.MainForm.resources
