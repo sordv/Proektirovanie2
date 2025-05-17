@@ -1,15 +1,13 @@
-﻿using System.Data;
-using System.Reflection;
-using Microsoft.VisualBasic.ApplicationServices;
-using Npgsql;
+﻿using Npgsql;
+using pis2.Models;
 
-namespace pis2
+namespace pis2.Services
 {
-    public class DatabaseHelper
+    public class DatabaseService
     {
         private string connectionString;
 
-        public DatabaseHelper(string connection) { connectionString = connection; }
+        public DatabaseService(string connection) { connectionString = connection; }
 
         public bool LoginUser(string login, string password, out string error)
         {
@@ -102,36 +100,33 @@ namespace pis2
             }
         }
 
-        public List<KeyValuePair<int, string>> GetData(string table)
+        public (List<KeyValuePair<int, string>>, List<KeyValuePair<int, string>>) GetData()
         {
-            string query = "";
-            var data = new List<KeyValuePair<int, string>>();
-
-            switch (table)
-            {
-                case "citizenships":
-                    query = "SELECT id, name FROM citizenships";
-                    break;
-                case "flags":
-                    query = "SELECT id, value FROM flags";
-                    break;
-                default:
-                    throw new ArgumentException("Incorrect table name!");
-            }
+            var allCitizenships = new List<KeyValuePair<int, string>>();
+            var allFlags = new List<KeyValuePair<int, string>>();
 
             using (var conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
-                using (var cmd = new NpgsqlCommand(query, conn))
+                using (var cmd = new NpgsqlCommand("SELECT id, name FROM citizenships ORDER BY NAME ASC", conn))
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        data.Add(new KeyValuePair<int, string>(reader.GetInt32(0), reader.GetString(1)));
+                        allCitizenships.Add(new KeyValuePair<int, string>(reader.GetInt32(0), reader.GetString(1)));
+                    }
+                }
+
+                using (var cmd = new NpgsqlCommand("SELECT id, value FROM flags ORDER BY VALUE ASC", conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        allFlags.Add(new KeyValuePair<int, string>(reader.GetInt32(0), reader.GetString(1)));
                     }
                 }
             }
-            return data.OrderBy(item => item.Value).ToList();
+            return (allCitizenships, allFlags);
         }
 
         public void UpdateUser(User user)
@@ -150,7 +145,7 @@ namespace pis2
                 {
                     cmd.Parameters.AddWithValue("citizenship", citizenship);
                     cmd.Parameters.AddWithValue("flags", flags);
-                    cmd.Parameters.AddWithValue("entry", entry.HasValue ? (object)entry.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("entry", entry);
                     cmd.Parameters.AddWithValue("username", username);
                     cmd.ExecuteNonQuery();
                 }

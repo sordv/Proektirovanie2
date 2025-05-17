@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace pis2
+﻿namespace pis2.Models
 {
     public class Rule
     {

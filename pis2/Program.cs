@@ -7,7 +7,11 @@ namespace pis2
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+
+            var view = new Views.MainFormView();
+            var controller = new Controllers.MainFormController(view, "Host=localhost;Username=postgres;Password=admin;Database=pis");
+
+            Application.Run(view);
         }
     }
 }
