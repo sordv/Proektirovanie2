@@ -1,6 +1,8 @@
 ﻿using pis2.Views;
 using pis2.Models;
 using pis2.Services;
+using System.Text;
+using Npgsql;
 
 namespace pis2.Controllers
 {
@@ -102,14 +104,63 @@ namespace pis2.Controllers
             _view.ShowLoginPanel();
         }
 
-        private void ButtonGenerateRoadmap_Click(Object sender, EventArgs e)
+        private void ButtonGenerateRoadmap_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Пока нельзя");
+            var (rules, roadmapItems) = _dbService.GetRoadmapData(); // получение информации из БД
+
+            var filteredRules = rules
+                .Where(rule =>
+                {
+                    // гражданство юзера должно быть в массиве РАЗРЕШЕННЫХ гражданствах
+                    // ИЛИ массив РАЗРЕШЕННЫХ гражданств должен быть пустой
+                    bool ctzOk = rule.Citizenship.Length == 0 ||
+                        rule.Citizenship.Contains(_currentUser.Citizenship);
+                    // гражданство юзера НЕ должно быть в массиве ЗАПРЕЩЕННЫХ гражданствах
+                    // ИЛИ массив ЗАПРЕЩЕННЫХ гражданств должен быть пустой
+                    bool banctzOk = rule.BannedCitizenships.Length == 0 ||
+                        !rule.BannedCitizenships.Contains(_currentUser.Citizenship);
+                    // все флаги юзера должны быть в массиве ОБЯЗАТЕЛНЫХ флагов
+                    // ИЛИ массив ОБЯЗАТЕЛЬНЫХ флагов должен быть пустой
+                    bool flgOk = rule.Flag.Length == 0 ||
+                        rule.Flag.All(i => _currentUser.Flags.Contains(i));
+                    // ни один флаг юзера НЕ должен быть в массиве ЗАПРЕЩЕННЫХ флагов
+                    // ИЛИ массив ЗАПРЕЩЕННЫХ флагов должен быть пустой
+                    bool banflgOk = rule.BannedFlags.Length == 0 ||
+                        !_currentUser.Flags.Any(i => rule.BannedFlags.Contains(i));
+                    // подходят те праила, где все 4 условия соблюдены
+                    return ctzOk && banctzOk && flgOk && banflgOk;
+                })
+                .GroupBy(r => r.RoadmapItem) // группировка правил по id roadmapitems (объединение дубликатов)
+                .Select(g => g 
+                    .OrderByDescending(r => r.Period ?? int.MinValue) // сортируем rule по убыванию period
+                    .First()) // берем первый (самый большой period)
+                .ToList();
+
+            var roadmapBuilder = new StringBuilder();
+            roadmapBuilder.AppendLine("Ваша дорожная карта");
+            roadmapBuilder.AppendLine();
+
+            foreach (var rule in filteredRules)
+            {
+                if (roadmapItems.TryGetValue(rule.RoadmapItem, out var itemText)) // получаем текст roadmapitem
+                {
+                    if (rule.Period.HasValue) // если указан срок, выводим с сроком
+                    {
+                        DateTime dueDate = _currentUser.Entry.Value.AddDays(rule.Period.Value);
+                        roadmapBuilder.AppendLine($"Выполнить до {dueDate:dd.MM.yyyy}");
+                    }
+
+                    roadmapBuilder.AppendLine(itemText);
+                    roadmapBuilder.AppendLine();
+                }
+            }
+
+            MessageBox.Show(roadmapBuilder.ToString());
         }
 
         private void ButtonEditRoadmap_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Пока тоже нельзя");
+            MessageBox.Show("Пока нельзя");
         }
 
         private void FormResize(object sender, EventArgs e)

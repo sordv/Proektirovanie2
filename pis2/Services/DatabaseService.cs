@@ -7,8 +7,9 @@ namespace pis2.Services
     {
         private string connectionString;
 
-        public DatabaseService(string connection) { connectionString = connection; }
+        public DatabaseService(string connection) { connectionString = connection; } // создание объекта для работы с БД
 
+        // метод для авториации пользователя
         public bool LoginUser(string login, string password, out string error)
         {
             error = string.Empty;
@@ -44,6 +45,7 @@ namespace pis2.Services
             return true;
         }
 
+        // метод для регистрации пользователя
         public bool RegisterUser(string login, string password, string passwordConfirm, out string error)
         {
             error = string.Empty;
@@ -100,6 +102,7 @@ namespace pis2.Services
             }
         }
 
+        // метод для получения всех гражданств и флагов (для отрисовки страницы)
         public (List<KeyValuePair<int, string>>, List<KeyValuePair<int, string>>) GetData()
         {
             var allCitizenships = new List<KeyValuePair<int, string>>();
@@ -129,6 +132,7 @@ namespace pis2.Services
             return (allCitizenships, allFlags);
         }
 
+        // обновить информацию о пользователе
         public void UpdateUser(User user)
         {
             Type userType = typeof(User);
@@ -152,6 +156,7 @@ namespace pis2.Services
             }
         }
 
+        // получить информацию о пользователе
         public (int Citizenship, int[] Flags, DateTime? EntryDate) GetUserData(string username)
         {
             using (var conn = new NpgsqlConnection(connectionString))
@@ -176,10 +181,51 @@ namespace pis2.Services
             return (-1, Array.Empty<int>(), null);
         }
 
+        // создать пользователя
         public User GetUser(string username)
         {
             var (citizenship, flags, entry) = GetUserData(username);
             return new User(username, citizenship, flags, entry);
+        }
+
+        // метод для получения всех правил и текстов Roadmapitem (для генерации дорожной карты)
+        public (List<Rule>, Dictionary<int, string>) GetRoadmapData()
+        {
+            var rules = new List<Rule>();
+            var roadmapItems = new Dictionary<int, string>();
+
+            using (var conn = new NpgsqlConnection(connectionString))
+            {
+                conn.Open();
+                // запрос получения правил
+                using (var cmd = new NpgsqlCommand("SELECT * FROM rules", conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        rules.Add(new Rule
+                        {
+                            Id = reader.GetInt32(0),
+                            Citizenship = reader.IsDBNull(1) ? Array.Empty<int>() : (int[])reader.GetValue(1),
+                            Flag = reader.IsDBNull(2) ? Array.Empty<int>() : (int[])reader.GetValue(2),
+                            BannedCitizenships = reader.IsDBNull(3) ? Array.Empty<int>() : (int[])reader.GetValue(3),
+                            BannedFlags = reader.IsDBNull(4) ? Array.Empty<int>() : (int[])reader.GetValue(4),
+                            RoadmapItem = reader.GetInt32(5),
+                            Period = reader.IsDBNull(6) ? (int?)null : reader.GetInt32(6)
+                        });
+                    }
+                }
+                // запрос получения значений roadmapitems
+                using (var cmd = new NpgsqlCommand("SELECT id, value FROM roadmapitems", conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        roadmapItems[reader.GetInt32(0)] = reader.GetString(1);
+                    }
+                }
+            }
+            return (rules, roadmapItems);
         }
     }
 }
