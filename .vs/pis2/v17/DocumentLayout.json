@@ -3,28 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\user\\source\\repos\\pis2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\controllers\\mainformcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\controllers\\mainformcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\controllers\\editorformcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\controllers\\editorformcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\services\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\services\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\controllers\\mainformcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\controllers\\mainformcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\views\\mainformview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\views\\mainformview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\models\\rule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\models\\rule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\views\\editorformview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\views\\editorformview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\services\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\services\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|c:\\users\\user\\source\\repos\\pis2\\pis2\\models\\rule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4857B950-4FAD-48C9-91AA-B59E01C70B06}|pis2\\pis2.csproj|solutionrelative:pis2\\models\\rule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,15 +46,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "MainFormController.cs",
               "DocumentMoniker": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Controllers\\MainFormController.cs",
               "RelativeDocumentMoniker": "pis2\\Controllers\\MainFormController.cs",
               "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Controllers\\MainFormController.cs",
               "RelativeToolTip": "pis2\\Controllers\\MainFormController.cs",
-              "ViewState": "AgIAAGQAAAAAAAAAAAAwwG0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAJsAAAAAAAAAAAAiwKIAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T19:44:51.333Z",
+              "WhenOpened": "2025-05-18T20:45:20.537Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EditorFormController.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Controllers\\EditorFormController.cs",
+              "RelativeDocumentMoniker": "pis2\\Controllers\\EditorFormController.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Controllers\\EditorFormController.cs",
+              "RelativeToolTip": "pis2\\Controllers\\EditorFormController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T20:44:49.319Z",
               "EditorCaption": ""
             },
             {
@@ -61,35 +78,33 @@
               "RelativeDocumentMoniker": "pis2\\Views\\MainFormView.cs",
               "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Views\\MainFormView.cs",
               "RelativeToolTip": "pis2\\Views\\MainFormView.cs",
-              "ViewState": "AgIAABcBAAAAAAAAAAAkwCQBAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAABUBAAAAAAAAAAAmwCQBAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T19:44:50.489Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-18T20:44:37.292Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "EditorFormView.cs",
+              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Views\\EditorFormView.cs",
+              "RelativeDocumentMoniker": "pis2\\Views\\EditorFormView.cs",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Views\\EditorFormView.cs",
+              "RelativeToolTip": "pis2\\Views\\EditorFormView.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAAAmwCkAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T20:44:26.153Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Program.cs",
-              "RelativeDocumentMoniker": "pis2\\Program.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Program.cs",
-              "RelativeToolTip": "pis2\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T19:45:02.038Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "DatabaseService.cs",
               "DocumentMoniker": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Services\\DatabaseService.cs",
               "RelativeDocumentMoniker": "pis2\\Services\\DatabaseService.cs",
               "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Services\\DatabaseService.cs",
               "RelativeToolTip": "pis2\\Services\\DatabaseService.cs",
-              "ViewState": "AgIAALsAAAAAAAAAAAAAANgAAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAAwBAAAAAAAAAAA6wBgBAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T19:45:07.107Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-18T20:44:07.891Z"
             },
             {
               "$type": "Document",
@@ -101,19 +116,19 @@
               "RelativeToolTip": "pis2\\Models\\User.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T19:45:11.013Z"
+              "WhenOpened": "2025-05-18T20:44:01.485Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "Rule.cs",
               "DocumentMoniker": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Models\\Rule.cs",
               "RelativeDocumentMoniker": "pis2\\Models\\Rule.cs",
               "ToolTip": "C:\\Users\\user\\source\\repos\\pis2\\pis2\\Models\\Rule.cs",
               "RelativeToolTip": "pis2\\Models\\Rule.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T19:45:10.356Z"
+              "WhenOpened": "2025-05-18T20:43:47.373Z"
             }
           ]
         }

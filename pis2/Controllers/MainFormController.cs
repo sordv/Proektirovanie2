@@ -160,7 +160,9 @@ namespace pis2.Controllers
 
         private void ButtonEditRoadmap_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Пока нельзя");
+            var editorView = new EditorFormView();
+            var editorController = new EditorFormController(editorView, _dbService.ConnectionString);
+            editorView.ShowDialog();
         }
 
         private void FormResize(object sender, EventArgs e)

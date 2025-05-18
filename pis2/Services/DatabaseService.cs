@@ -1,11 +1,13 @@
 ﻿using Npgsql;
 using pis2.Models;
+using System.Data;
 
 namespace pis2.Services
 {
     public class DatabaseService
     {
         private string connectionString;
+        internal string ConnectionString => connectionString;
 
         public DatabaseService(string connection) { connectionString = connection; } // создание объекта для работы с БД
 
@@ -189,9 +191,9 @@ namespace pis2.Services
         }
 
         // метод для получения всех правил и текстов Roadmapitem (для генерации дорожной карты)
-        public (List<Rule>, Dictionary<int, string>) GetRoadmapData()
+        public (List<Models.Rule>, Dictionary<int, string>) GetRoadmapData()
         {
-            var rules = new List<Rule>();
+            var rules = new List<Models.Rule>();
             var roadmapItems = new Dictionary<int, string>();
 
             using (var conn = new NpgsqlConnection(connectionString))
@@ -203,7 +205,7 @@ namespace pis2.Services
                 {
                     while (reader.Read())
                     {
-                        rules.Add(new Rule
+                        rules.Add(new Models.Rule
                         {
                             Id = reader.GetInt32(0),
                             Citizenship = reader.IsDBNull(1) ? Array.Empty<int>() : (int[])reader.GetValue(1),
@@ -226,6 +228,66 @@ namespace pis2.Services
                 }
             }
             return (rules, roadmapItems);
+        }
+
+        // метод для редактирования БД (через админ панель)
+        public DataTable ExecuteEditorRequest(string query)
+        {
+            var dataTable = new DataTable();
+
+            using (var conn = new NpgsqlConnection(connectionString))
+            using (var cmd = new NpgsqlCommand(query, conn))
+            {
+                conn.Open();
+
+                if (query.Trim().StartsWith("SELECT", StringComparison.OrdinalIgnoreCase))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        dataTable.Load(reader);
+                    }
+                }
+                else
+                {
+                    cmd.ExecuteNonQuery();
+                    // После изменения данных возвращаем обновленную таблицу
+                    return ExecuteEditorRequest(GetSelectQueryForTable(GetTableNameFromQuery(query)));
+                }
+            }
+
+            return dataTable;
+        }
+
+        private string GetTableNameFromQuery(string query)
+        {
+            if (query.Contains("citizenships")) return "citizenships";
+            if (query.Contains("flags")) return "flags";
+            if (query.Contains("roadmapitems")) return "roadmapitems";
+            return string.Empty;
+        }
+
+        private string GetSelectQueryForTable(string tableName)
+        {
+            return $"SELECT * FROM {tableName} ORDER BY id ASC";
+        }
+
+        public DataTable ExecuteParameterizedQuery(string query, params NpgsqlParameter[] parameters)
+        {
+            var dataTable = new DataTable();
+
+            using (var conn = new NpgsqlConnection(connectionString))
+            using (var cmd = new NpgsqlCommand(query, conn))
+            {
+                cmd.Parameters.AddRange(parameters);
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    dataTable.Load(reader);
+                }
+            }
+
+            return dataTable;
         }
     }
 }
