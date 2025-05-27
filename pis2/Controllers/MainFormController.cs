@@ -106,7 +106,7 @@ namespace pis2.Controllers
 
         private void ButtonGenerateRoadmap_Click(object sender, EventArgs e)
         {
-            var (rules, roadmapItems) = _dbService.GetRoadmapData(); // получение информации из БД
+            var (rules, roadmapItems) = _dbService.GetRoadmapData();
 
             var filteredRules = rules
                 .Where(rule =>
@@ -130,32 +130,30 @@ namespace pis2.Controllers
                     // подходят те праила, где все 4 условия соблюдены
                     return ctzOk && banctzOk && flgOk && banflgOk;
                 })
-                .GroupBy(r => r.RoadmapItem) // группировка правил по id roadmapitems (объединение дубликатов)
-                .Select(g => g 
-                    .OrderByDescending(r => r.Period ?? int.MinValue) // сортируем rule по убыванию period
-                    .First()) // берем первый (самый большой period)
+                .GroupBy(r => r.RoadmapItem)
+                .Select(g => g
+                    .OrderByDescending(r => r.Period ?? int.MinValue)
+                    .First())
                 .ToList();
 
-            var roadmapBuilder = new StringBuilder();
-            roadmapBuilder.AppendLine("Ваша дорожная карта");
-            roadmapBuilder.AppendLine();
+            filteredRules = filteredRules
+                .OrderBy(r => r.Period.HasValue ? 0 : 1)
+                .ThenBy(r => r.Period ?? int.MaxValue)
+                .ToList();
+
+            var result = new Roadmap();
 
             foreach (var rule in filteredRules)
             {
-                if (roadmapItems.TryGetValue(rule.RoadmapItem, out var itemText)) // получаем текст roadmapitem
+                var roadmapItem = roadmapItems.FirstOrDefault(item => item.Id == rule.RoadmapItem);
+                if (rule.Period.HasValue)
                 {
-                    if (rule.Period.HasValue) // если указан срок, выводим с сроком
-                    {
-                        DateTime dueDate = _currentUser.Entry.Value.AddDays(rule.Period.Value);
-                        roadmapBuilder.AppendLine($"Выполнить до {dueDate:dd.MM.yyyy}");
-                    }
-
-                    roadmapBuilder.AppendLine(itemText);
-                    roadmapBuilder.AppendLine();
+                    if (roadmapItem != null) { roadmapItem.Period = rule.Period; }
                 }
+                result.AddItem(roadmapItem);
             }
 
-            MessageBox.Show(roadmapBuilder.ToString());
+            MessageBox.Show(result.Render());
         }
 
         private void ButtonEditRoadmap_Click(object sender, EventArgs e)

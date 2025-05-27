@@ -191,10 +191,10 @@ namespace pis2.Services
         }
 
         // метод для получения всех правил и текстов Roadmapitem (для генерации дорожной карты)
-        public (List<Models.Rule>, Dictionary<int, string>) GetRoadmapData()
+        public (List<Models.Rule>, List<RoadmapItem>) GetRoadmapData()
         {
             var rules = new List<Models.Rule>();
-            var roadmapItems = new Dictionary<int, string>();
+            var roadmapItems = new List<RoadmapItem>();
 
             using (var conn = new NpgsqlConnection(connectionString))
             {
@@ -223,7 +223,11 @@ namespace pis2.Services
                 {
                     while (reader.Read())
                     {
-                        roadmapItems[reader.GetInt32(0)] = reader.GetString(1);
+                        roadmapItems.Add(new RoadmapItem
+                        {
+                            Id = reader.GetInt32(0),
+                            Value = reader.GetString(1)
+                        });
                     }
                 }
             }

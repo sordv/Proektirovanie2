@@ -1,0 +1,1 @@
+namespace pis2.Models{    public class RoadmapItem    {        public int Id { get; set; }        public string Value { get; set; }        public int? Period;    }}
